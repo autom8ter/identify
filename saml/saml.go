@@ -5,8 +5,8 @@ import (
 	"encoding/base64"
 	"encoding/xml"
 	"fmt"
-	"github.com/autom8ter/identify/certificates"
 	"github.com/autom8ter/identify/saml/driver"
+	"github.com/autom8ter/identify/util"
 	"github.com/nu7hatch/gouuid"
 	"io/ioutil"
 	"net/url"
@@ -17,11 +17,11 @@ import (
 )
 
 type AuthorizationRequest struct {
-	Id                 string
-	IssueInstant       string
-	AppSettings        *driver.AppSettings
-	AccountSettings    *driver.AccountSettings
-	Base64             int
+	Id              string
+	IssueInstant    string
+	AppSettings     *driver.AppSettings
+	AccountSettings *driver.AccountSettings
+	Base64          int
 }
 
 func NewAuthorizationRequest(settingsFn ...driver.SamlSettingsFunc) *AuthorizationRequest {
@@ -119,7 +119,7 @@ func (ar AuthorizationRequest) GetRequest(base64Encode bool) (string, error) {
 // GetSignedRequest returns a string formatted XML document that represents the SAML document
 // TODO: parameterize more parts of the request
 func (ar AuthorizationRequest) GetSignedRequest(base64Encode bool, publicCert string, privateCert string) (string, error) {
-	cert, err := certificates.LoadCertificate(publicCert)
+	cert, err := util.LoadCertificate(publicCert)
 	if err != nil {
 		return "", err
 	}
