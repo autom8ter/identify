@@ -302,3 +302,5 @@ type Response struct {
 	Settings    driver.AccountSettings
 	certificate x509.Certificate
 }
+
+type ModifyRequestFunc func(req *AuthorizationRequest) *AuthorizationRequest
