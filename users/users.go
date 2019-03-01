@@ -6,31 +6,32 @@ import (
 )
 
 type User struct {
-	ID           int
-	Username     string
-	FullName     string
-	PhoneNumbers []string
-	Subscription string
-	CreatedAt    string
-	LastLogin    string
-	Suspended    bool
+	ID           int `json:"id"`
+	UID     string `json:"uid"`
+	FullName     string `json:"full_name"`
+	Phone	string `json:"phone"`
+	Location string `json:"location"`
+	Subscription string `json:"subscription"`
+	CreatedAt    string `json:"created_at"`
+	LastLogin    string `json:"last_login"`
+	Suspended    bool `json:"suspended"`
 	// Auth
-	Email    string
-	Password string
-	Roles    []string
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Roles    []string `json:"roles"`
 
 	// Confirm
-	ConfirmToken string
-	Confirmed    bool
+	ConfirmToken string `json:"confirmed_token"`
+	Confirmed    bool `json:"confirmed"`
 
 	// Lock
-	AttemptNumber int64
-	AttemptTime   time.Time
-	Locked        time.Time
+	AttemptNumber int64 `json:"attempt_number"`
+	AttemptTime   time.Time `json:"attempt_time"`
+	Locked        time.Time `json:"locked"`
 
 	// Recover
-	RecoverToken       string
-	RecoverTokenExpiry time.Time
+	RecoverToken       string `json:"recover_token"`
+	RecoverTokenExpiry time.Time `json:"recover_token_expiry"`
 
 	Data interface{}
 }
@@ -47,7 +48,7 @@ func NewMemStorer() *MemStorer {
 		Users: map[string]User{
 			"testperson@gmail.com": User{
 				ID:        1,
-				Username:  "TestPerson",
+				UID:  "TestPerson",
 				Password:  "$2a$10$XtW/BrS5HeYIuOCXYe8DFuInetDMdaarMUJEOg/VA/JAIDgw3l4aG", // pass = 1234
 				Email:     "TestPerson@gmail.com",
 				Confirmed: true,
