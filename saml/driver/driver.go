@@ -5,17 +5,6 @@ import (
 	"os"
 )
 
-type Driver interface {
-	ConfigAuthnRequest(req *AuthnRequest)
-	ConfigAuthnSignedRequest(req *AuthnSignedRequest)
-	GetRequestUrl() (string, error)
-	GetSignedRequest(base64Encode bool, publicCert string, privateCert string) (string, error)
-	GetRequest(base64Encode bool) (string, error)
-}
-
-type AuthNReqFunc func(req *AuthnRequest)
-type AuthNSignedReqFunc func(req *AuthnSignedRequest)
-
 type AuthnRequest struct {
 	XMLName                        xml.Name
 	SAMLP                          string                `xml:"xmlns:samlp,attr"`
@@ -30,14 +19,6 @@ type AuthnRequest struct {
 	Issuer                         Issuer                `xml:"Issuer"`
 	NameIDPolicy                   NameIDPolicy          `xml:"NameIDPolicy"`
 	RequestedAuthnContext          RequestedAuthnContext `xml:"RequestedAuthnContext"`
-}
-
-func NewAuthnRequest(opts ...AuthNReqFunc) *AuthnRequest {
-	auth := &AuthnRequest{}
-	for _, o := range opts {
-		o(auth)
-	}
-	return auth
 }
 
 type AuthnSignedRequest struct {
@@ -57,14 +38,6 @@ type AuthnSignedRequest struct {
 	RequestedAuthnContext          RequestedAuthnContext `xml:"RequestedAuthnContext"`
 	AuthnContextClassRef           AuthnContextClassRef  `xml:"AuthnContextClassRef"`
 	Signature                      Signature             `xml:"Signature"`
-}
-
-func NewAuthnSignedRequest(opts ...AuthNSignedReqFunc) *AuthnSignedRequest {
-	auth := &AuthnSignedRequest{}
-	for _, o := range opts {
-		o(auth)
-	}
-	return auth
 }
 
 type Issuer struct {

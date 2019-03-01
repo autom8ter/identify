@@ -22,8 +22,6 @@ type AuthorizationRequest struct {
 	AppSettings        *driver.AppSettings
 	AccountSettings    *driver.AccountSettings
 	Base64             int
-	AuthNReqFunc       driver.AuthNReqFunc
-	AuthNSignedReqFunc driver.AuthNSignedReqFunc
 }
 
 func NewAuthorizationRequest(settingsFn ...driver.SamlSettingsFunc) *AuthorizationRequest {
