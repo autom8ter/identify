@@ -20,16 +20,14 @@ func Empty() Option {
 	return func(a *authboss.Authboss) {
 	}
 }
-func WithDefaults(rootUrl string, twoFa, readJson, useUserName bool) Option {
+func WithDefaults(rootUrl string, readJson, useUserName bool) Option {
 	return func(a *authboss.Authboss) {
 		a.Config.Paths.RootURL = rootUrl
 		if readJson {
 			a.Config.Core.ViewRenderer = defaults.JSONRenderer{}
 		}
-		if twoFa {
-			// Turn on e-mail authentication required
-			a.Config.Modules.TwoFactorEmailAuthRequired = true
-		}
+		a.Config.Modules.TwoFactorEmailAuthRequired = true
+
 		a.Config.Storage.Server = db.NewMemStorer()
 		// The preserve fields are things we don't want to
 		// lose when we're doing user registration (prevents having
