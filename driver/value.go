@@ -27,9 +27,17 @@ func NewArbitraryValuer(validator *Validator, getValuesFunc func() map[string]st
 	return &ArbitraryValuer{Validator: validator, GetValuesFunc: getValuesFunc}
 }
 
+func (a *ArbitraryValuer) GetValues() map[string]string {
+	return a.GetValuesFunc()
+}
+
 type ConfirmValuer struct {
 	*Validator
 	GetTokenFunc func() string
+}
+
+func (c *ConfirmValuer) GetToken() string {
+	return c.GetTokenFunc()
 }
 
 func NewConfirmValuer(validator *Validator, getTokenFunc func() string) *ConfirmValuer {
@@ -42,6 +50,10 @@ type RecoverStartValuer struct {
 	GetPIDFunc func() string
 }
 
+func (r *RecoverStartValuer) GetPID() string {
+	return r.GetPIDFunc()
+}
+
 func NewRecoverStartValuer(validator *Validator, getPIDFunc func() string) *RecoverStartValuer {
 	return &RecoverStartValuer{Validator: validator, GetPIDFunc: getPIDFunc}
 }
@@ -50,6 +62,10 @@ type RecoverMiddleValuer struct {
 	*Validator
 
 	GetTokenFunc func() string
+}
+
+func (r *RecoverMiddleValuer) GetToken() string {
+	return r.GetTokenFunc()
 }
 
 func NewRecoverMiddleValuer(validator *Validator, getTokenFunc func() string) *RecoverMiddleValuer {
@@ -63,6 +79,14 @@ type RecoverEndValuer struct {
 	GetTokenFunc    func() string
 }
 
+func (r *RecoverEndValuer) GetPassword() string {
+	return r.GetPasswordFunc()
+}
+
+func (r RecoverEndValuer) GetToken() string {
+	return r.GetTokenFunc()
+}
+
 func NewRecoverEndValuer(validator *Validator, getPasswordFunc func() string, getTokenFunc func() string) *RecoverEndValuer {
 	return &RecoverEndValuer{Validator: validator, GetPasswordFunc: getPasswordFunc, GetTokenFunc: getTokenFunc}
 }
@@ -73,6 +97,10 @@ type RememberValuer struct {
 	// tells the remember module if it should remember that user's
 	// authentication or not.
 	GetShouldRememberFunc func() bool
+}
+
+func (r *RememberValuer) GetShouldRemember() bool {
+	return r.GetShouldRememberFunc()
 }
 
 func NewRememberValuer(getShouldRememberFunc func() bool) *RememberValuer {

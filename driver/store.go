@@ -34,6 +34,10 @@ type ConfirmingServerStorer struct {
 	LoadByConfirmSelectorFunc func(ctx context.Context, selector string) (api.ConfirmableUser, error)
 }
 
+func (c *ConfirmingServerStorer) LoadByConfirmSelector(ctx context.Context, selector string) (api.ConfirmableUser, error) {
+	return c.LoadByConfirmSelectorFunc(ctx, selector)
+}
+
 func NewConfirmingServerStorer(serverStorer *ServerStorer, loadByConfirmSelectorFunc func(ctx context.Context, selector string) (api.ConfirmableUser, error)) *ConfirmingServerStorer {
 	return &ConfirmingServerStorer{ServerStorer: serverStorer, LoadByConfirmSelectorFunc: loadByConfirmSelectorFunc}
 }
@@ -47,6 +51,14 @@ type CreatingServerStorer struct {
 	// Create the user in storage, it should not overwrite a user
 	// and should return ErrUserFound if it currently exists.
 	CreateFunc func(ctx context.Context, user api.User) error
+}
+
+func (c *CreatingServerStorer) New(ctx context.Context) api.User {
+	return c.NewFunc(ctx)
+}
+
+func (c *CreatingServerStorer) Create(ctx context.Context, user api.User) error {
+	return c.CreateFunc(ctx, user)
 }
 
 func NewCreatingServerStorer(serverStorer *ServerStorer, newFunc func(ctx context.Context) api.User, createFunc func(ctx context.Context, user api.User) error) *CreatingServerStorer {
@@ -81,6 +93,14 @@ type OAuth2ServerStorer struct {
 	SaveOAuth2Func func(ctx context.Context, user api.OAuth2User) error
 }
 
+func (o *OAuth2ServerStorer) NewFromOAuth2(ctx context.Context, provider string, details map[string]string) (api.OAuth2User, error) {
+	return o.NewFromOAuth2Func(ctx, provider, details)
+}
+
+func (o *OAuth2ServerStorer) SaveOAuth2(ctx context.Context, user api.OAuth2User) error {
+	return o.SaveOAuth2Func(ctx, user)
+}
+
 func NewOAuth2ServerStorer(serverStorer *ServerStorer, newFromOAuth2Func func(ctx context.Context, provider string, details map[string]string) (api.OAuth2User, error), saveOAuth2Func func(ctx context.Context, user api.OAuth2User) error) *OAuth2ServerStorer {
 	return &OAuth2ServerStorer{ServerStorer: serverStorer, NewFromOAuth2Func: newFromOAuth2Func, SaveOAuth2Func: saveOAuth2Func}
 }
@@ -91,6 +111,10 @@ type RecoveringServerStorer struct {
 	// LoadByRecoverSelector finds a user by his recover selector field
 	// and should return ErrUserNotFound if that user cannot be found.
 	LoadByRecoverSelectorFunc func(ctx context.Context, selector string) (api.RecoverableUser, error)
+}
+
+func (r *RecoveringServerStorer) LoadByRecoverSelector(ctx context.Context, selector string) (api.RecoverableUser, error) {
+	return r.LoadByRecoverSelectorFunc(ctx, selector)
 }
 
 func NewRecoveringServerStorer(serverStorer *ServerStorer, loadByRecoverSelectorFunc func(ctx context.Context, selector string) (api.RecoverableUser, error)) *RecoveringServerStorer {
@@ -107,6 +131,18 @@ type RememberingServerStorer struct {
 	// UseRememberToken finds the pid-token pair and deletes it.
 	// If the token could not be found return ErrTokenNotFound
 	UseRememberTokenFunc func(ctx context.Context, pid, token string) error
+}
+
+func (r *RememberingServerStorer) AddRememberToken(ctx context.Context, pid, token string) error {
+	return r.AddRememberTokenFunc(ctx, pid, token)
+}
+
+func (r *RememberingServerStorer) DelRememberTokens(ctx context.Context, pid string) error {
+	return r.DelRememberTokensFunc(ctx, pid)
+}
+
+func (r *RememberingServerStorer) UseRememberToken(ctx context.Context, pid, token string) error {
+	return r.UseRememberTokenFunc(ctx, pid, token)
 }
 
 func NewRememberingServerStorer(serverStorer *ServerStorer, addRememberTokenFunc func(ctx context.Context, pid, token string) error, delRememberTokensFunc func(ctx context.Context, pid string) error, useRememberTokenFunc func(ctx context.Context, pid, token string) error) *RememberingServerStorer {

@@ -1,66 +1,30 @@
 package driver
 
 import (
-	"github.com/gorilla/mux"
-	"io"
 	"net/http"
 )
 
 // Router implementation
 // Does not use a dynamic map to hope to be slightly more performant
 type Router struct {
-	gets    *mux.Router
-	posts   *mux.Router
-	deletes *mux.Router
+	GetFunc    func(path string, handler http.Handler)
+	PostFunc   func(path string, handler http.Handler)
+	DeleteFunc func(path string, handler http.Handler)
+	http.HandlerFunc
 }
 
-// NewRouter creates a new router
-func NewRouter() *Router {
-	r := &Router{
-		gets:    mux.NewRouter(),
-		posts:   mux.NewRouter(),
-		deletes: mux.NewRouter(),
-	}
-
-	// Nothing gets handled at the root of the authboss router
-	r.gets.Handle("/", http.NotFoundHandler())
-	r.posts.Handle("/", http.NotFoundHandler())
-	r.deletes.Handle("/", http.NotFoundHandler())
-
-	return r
+func NewRouter(getFunc func(path string, handler http.Handler), postFunc func(path string, handler http.Handler), deleteFunc func(path string, handler http.Handler), handlerFunc http.HandlerFunc) *Router {
+	return &Router{GetFunc: getFunc, PostFunc: postFunc, DeleteFunc: deleteFunc, HandlerFunc: handlerFunc}
 }
 
-// Get method route
 func (r *Router) Get(path string, handler http.Handler) {
-	r.gets.Handle(path, handler)
+	r.GetFunc(path, handler)
 }
 
-// Post method route
 func (r *Router) Post(path string, handler http.Handler) {
-	r.posts.Handle(path, handler)
+	r.PostFunc(path, handler)
 }
 
-// Delete method route
 func (r *Router) Delete(path string, handler http.Handler) {
-	r.deletes.Handle(path, handler)
-}
-
-// ServeHTTP for http.Handler
-// Only does get/posts, all other request types are a bad request
-func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	var router http.Handler
-	switch req.Method {
-	case "GET":
-		router = r.gets
-	case "POST":
-		router = r.posts
-	case "DELETE":
-		router = r.deletes
-	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		io.WriteString(w, "method not allowed")
-		return
-	}
-
-	router.ServeHTTP(w, req)
+	r.DeleteFunc(path, handler)
 }
