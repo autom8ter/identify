@@ -9,8 +9,7 @@ import (
 func TestNew(t *testing.T) {
 	boss := identify.New(
 		options.Empty(),
-		options.WithDefaults(true, true),
-		)
+	)
 	if boss == nil {
 		t.Fatal("failed to create new")
 	}
