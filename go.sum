@@ -65,6 +65,8 @@ github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXf
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/volatiletech/authboss v2.2.1-0.20190307035025-12fcb0d91456+incompatible h1:hpNwXgkf+SjwbTTzE4f9FBFPrNwhIQwTxoWxCxf/OmM=
 github.com/volatiletech/authboss v2.2.1-0.20190307035025-12fcb0d91456+incompatible/go.mod h1:EDBO8V+iiBoUR721My3a+iIeuH/1t6VcrCd5bl3v8Bs=
+github.com/volatiletech/authboss-clientstate v0.0.0-20190112194853-0943df8b4e05 h1:djgQBr+jocgrtoRacNPgFCkg0ib6UtLSGzJ76jT+7yM=
+github.com/volatiletech/authboss-clientstate v0.0.0-20190112194853-0943df8b4e05/go.mod h1:OfM17hvA6F9YRmXy2itY6fJiR4j4gXIIVs3NT1UPvoE=
 github.com/volatiletech/authboss-renderer v0.0.0-20181105062701-4b64de40529a h1:0s3D3O9E5cIyju6cwv1PH6hWytwUv9eP+lhUbDHGsGA=
 github.com/volatiletech/authboss-renderer v0.0.0-20181105062701-4b64de40529a/go.mod h1:JMZJF0rB3SIlSX00Q4T0LnlYoGBJR2WczG/spD8hxok=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=

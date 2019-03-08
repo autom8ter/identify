@@ -5,6 +5,7 @@ import (
 	"github.com/autom8ter/identify/db"
 	"github.com/spf13/viper"
 	"github.com/volatiletech/authboss"
+	"github.com/volatiletech/authboss-clientstate"
 	"github.com/volatiletech/authboss/defaults"
 	aboauth "github.com/volatiletech/authboss/oauth2"
 	"github.com/volatiletech/authboss/otp/twofactor"
@@ -21,7 +22,7 @@ func Empty() Option {
 	}
 }
 
-func WithDefaults(v *viper.Viper) Option {
+func Init(v *viper.Viper, cookie abclientstate.CookieStorer, session abclientstate.SessionStorer) Option {
 	v.SetDefault("root-url", "http://localhost:8080")
 	v.SetDefault("read-json", true)
 	v.SetDefault("use-username", true)
@@ -37,10 +38,13 @@ func WithDefaults(v *viper.Viper) Option {
 		a.Config.Paths.RootURL = rootUrl
 		if readJson {
 			a.Config.Core.ViewRenderer = defaults.JSONRenderer{}
+			a.Config.Core.MailRenderer = defaults.JSONRenderer{}
 		}
 		a.Config.Modules.TwoFactorEmailAuthRequired = true
 
 		a.Config.Storage.Server = db.NewMemStorer()
+		a.Config.Storage.SessionState = session
+		a.Config.Storage.CookieState = cookie
 		// The preserve fields are things we don't want to
 		// lose when we're doing user registration (prevents having
 		// to type them again)
