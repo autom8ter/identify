@@ -18,8 +18,8 @@ require (
 	github.com/shiyanhui/hero v0.0.1 // indirect
 	github.com/spf13/viper v1.3.1
 	github.com/volatiletech/authboss v2.2.1-0.20190307035025-12fcb0d91456+incompatible
-	github.com/volatiletech/authboss-clientstate v0.0.0-20190112194853-0943df8b4e05 // indirect
-	github.com/volatiletech/authboss-renderer v0.0.0-20181105062701-4b64de40529a // indirect
+	github.com/volatiletech/authboss-clientstate v0.0.0-20190112194853-0943df8b4e05
+	github.com/volatiletech/authboss-renderer v0.0.0-20181105062701-4b64de40529a
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
 	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421
 	gopkg.in/authboss.v1 v1.1.0 // indirect

@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/volatiletech/authboss"
 	"github.com/volatiletech/authboss-clientstate"
+	"github.com/volatiletech/authboss-renderer"
 	"github.com/volatiletech/authboss/defaults"
 	aboauth "github.com/volatiletech/authboss/oauth2"
 	"github.com/volatiletech/authboss/otp/twofactor"
@@ -27,6 +28,8 @@ func Init(v *viper.Viper, cookie abclientstate.CookieStorer, session abclientsta
 	v.SetDefault("read-json", true)
 	v.SetDefault("use-username", true)
 	v.SetDefault("issuer", "Autom8ter")
+	v.SetDefault("render.override", "views")
+	v.SetDefault("render.mount", "/auth")
 	return func(a *authboss.Authboss) {
 		rootUrl := v.GetString("root-url")
 		readJson := v.GetBool("read-json")
@@ -34,11 +37,13 @@ func Init(v *viper.Viper, cookie abclientstate.CookieStorer, session abclientsta
 		issuer := v.GetString("issuer")
 		clientId := v.GetString("oauth.client-id")
 		clientSecret := v.GetString("oauth.client-secret")
-
+		renderMount := v.GetString("email.mount")
+		renderOverride := v.GetString("email.override")
 		a.Config.Paths.RootURL = rootUrl
 		if readJson {
 			a.Config.Core.ViewRenderer = defaults.JSONRenderer{}
-			a.Config.Core.MailRenderer = defaults.JSONRenderer{}
+		} else {
+			a.Config.Core.ViewRenderer = abrenderer.NewHTML(renderMount, renderOverride)
 		}
 		a.Config.Modules.TwoFactorEmailAuthRequired = true
 
@@ -52,6 +57,7 @@ func Init(v *viper.Viper, cookie abclientstate.CookieStorer, session abclientsta
 		// Set up defaults for basically everything besides the ViewRenderer/MailRenderer in the HTTP stack
 		// TOTP2FAIssuer is the name of the issuer we use for totp 2fa
 		a.Config.Modules.TOTP2FAIssuer = issuer
+		a.Config.Core.MailRenderer = abrenderer.NewEmail(renderMount, renderOverride)
 
 		defaults.SetCore(&a.Config, readJson, useUserName)
 
