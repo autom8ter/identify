@@ -3,6 +3,7 @@ package options
 import (
 	"fmt"
 	"github.com/autom8ter/identify/db"
+	"github.com/spf13/viper"
 	"github.com/volatiletech/authboss"
 	"github.com/volatiletech/authboss/defaults"
 	aboauth "github.com/volatiletech/authboss/oauth2"
@@ -10,7 +11,6 @@ import (
 	"github.com/volatiletech/authboss/otp/twofactor/totp2fa"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"os"
 	"regexp"
 )
 
@@ -20,8 +20,20 @@ func Empty() Option {
 	return func(a *authboss.Authboss) {
 	}
 }
-func WithDefaults(rootUrl string, readJson, useUserName bool) Option {
+
+func WithDefaults(v *viper.Viper) Option {
+	v.SetDefault("root-url", "http://localhost:8080")
+	v.SetDefault("read-json", true)
+	v.SetDefault("use-username", true)
+	v.SetDefault("issuer", "Autom8ter")
 	return func(a *authboss.Authboss) {
+		rootUrl := v.GetString("root-url")
+		readJson := v.GetBool("read-json")
+		useUserName := v.GetBool("use-username")
+		issuer := v.GetString("issuer")
+		clientId := v.GetString("oauth.client-id")
+		clientSecret := v.GetString("oauth.client-secret")
+
 		a.Config.Paths.RootURL = rootUrl
 		if readJson {
 			a.Config.Core.ViewRenderer = defaults.JSONRenderer{}
@@ -35,7 +47,7 @@ func WithDefaults(rootUrl string, readJson, useUserName bool) Option {
 		a.Config.Modules.RegisterPreserveFields = []string{"email", "name"}
 		// Set up defaults for basically everything besides the ViewRenderer/MailRenderer in the HTTP stack
 		// TOTP2FAIssuer is the name of the issuer we use for totp 2fa
-		a.Config.Modules.TOTP2FAIssuer = "Autom8ter"
+		a.Config.Modules.TOTP2FAIssuer = issuer
 
 		defaults.SetCore(&a.Config, readJson, useUserName)
 
@@ -83,13 +95,12 @@ func WithDefaults(rootUrl string, readJson, useUserName bool) Option {
 		if err := totp.Setup(); err != nil {
 			panic(err)
 		}
-		if os.Getenv("GOOGLE_CLIENT_ID") != "" && os.Getenv("GOOGLE_CLIENT_SECRET") != "" {
-			fmt.Println("oauth2.toml exists, configuring google oauth2")
+		if clientId != "" && clientSecret != "" {
 			a.Config.Modules.OAuth2Providers = map[string]authboss.OAuth2Provider{
 				"google": authboss.OAuth2Provider{
 					OAuth2Config: &oauth2.Config{
-						ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-						ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+						ClientID:     clientId,
+						ClientSecret: clientSecret,
 						Scopes:       []string{`profile`, `email`},
 						Endpoint:     google.Endpoint,
 					},
@@ -97,9 +108,8 @@ func WithDefaults(rootUrl string, readJson, useUserName bool) Option {
 				},
 			}
 		} else {
-			fmt.Println("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET not found, disabling oauth...")
+			fmt.Println("oauth.client-id and oauth.client-secret not found in config, disabling oauth...")
 		}
-
 	}
 }
 

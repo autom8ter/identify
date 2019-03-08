@@ -16,6 +16,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/pquerna/otp v1.1.0 // indirect
 	github.com/shiyanhui/hero v0.0.1 // indirect
+	github.com/spf13/viper v1.3.1
 	github.com/volatiletech/authboss v2.2.1-0.20190307035025-12fcb0d91456+incompatible
 	github.com/volatiletech/authboss-renderer v0.0.0-20181105062701-4b64de40529a // indirect
 	golang.org/x/crypto v0.0.0-20190228161510-8dd112bcdc25 // indirect
